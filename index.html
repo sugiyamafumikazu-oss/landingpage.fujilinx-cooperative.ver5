@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フジリンクス協同組合 | 高級人材育成と法的支援の融合</title>
+    
+    <!-- Fonts: Noto Serif JP for Luxury Headings, Noto Sans JP for readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind Config for Luxury Theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        luxury: {
+                            base: '#FDFCF8',   /* Off-white cream base */
+                            gold: '#C5A059',   /* Muted metallic gold */
+                            goldLight: '#E5C585',
+                            navy: '#0F172A',   /* Deep midnight blue */
+                            navyLight: '#1E293B',
+                            text: '#333333',
+                            sub: '#666666'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif JP"', 'serif'],
+                        sans: ['"Noto Sans JP"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'luxury': '0 10px 40px -10px rgba(0, 0, 0, 0.1)',
+                        'gold': '0 4px 20px -5px rgba(197, 160, 89, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFCF8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C5A059;
+            border-radius: 4px;
+        }
+
+        /* Animations */
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .luxury-gradient-text {
+            background: linear-gradient(to right, #0F172A, #C5A059);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Chart Container overrides */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 400px;
+            max-height: 400px;
+        }
+
+        /* Interactive Card Hover Effects */
+        .hover-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -5px rgba(197, 160, 89, 0.2);
+            border-color: #C5A059;
+        }
+    </style>
+</head>
+<body class="bg-luxury-base text-luxury-text font-sans antialiased selection:bg-luxury-gold selection:text-white">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-luxury-base/90 backdrop-blur-md border-b border-gray-100 py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-luxury-gold rounded-sm flex items-center justify-center text-white font-serif font-bold text-xl">F</div>
+                <div class="text-2xl font-serif font-bold text-luxury-navy tracking-wide">FUJI LINKS <span class="text-xs font-sans font-normal tracking-widest text-luxury-gold block uppercase">Cooperative</span></div>
+            </div>
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-widest text-luxury-navyLight">
+                <a href="#concept" class="hover:text-luxury-gold transition-colors">CONCEPT</a>
+                <a href="#ai-education" class="hover:text-luxury-gold transition-colors">AI & EDUCATION</a>
+                <a href="#synergy" class="hover:text-luxury-gold transition-colors">SYNERGY</a>
+                <a href="#process" class="hover:text-luxury-gold transition-colors">PROCESS</a>
+                <a href="#contact" class="px-6 py-2 bg-luxury-navy text-white hover:bg-luxury-gold transition-colors duration-300">CONTACT</a>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-luxury-navy">
+                <span class="text-2xl">☰</span>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full shadow-lg">
+            <div class="flex flex-col p-4 space-y-4 text-center">
+                <a href="#concept" class="block py-2 hover:text-luxury-gold">CONCEPT</a>
+                <a href="#ai-education" class="block py-2 hover:text-luxury-gold">AI & EDUCATION</a>
+                <a href="#synergy" class="block py-2 hover:text-luxury-gold">SYNERGY</a>
+                <a href="#process" class="block py-2 hover:text-luxury-gold">PROCESS</a>
+                <a href="#contact" class="block py-2 bg-luxury-navy text-white rounded-sm">CONTACT</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <!-- Background Canvas Animation -->
+        <canvas id="heroCanvas" class="absolute top-0 left-0 w-full h-full z-0 opacity-30"></canvas>
+        
+        <div class="container mx-auto px-6 relative z-10 text-center">
+            <div class="inline-block mb-4 px-3 py-1 border border-luxury-gold text-luxury-gold text-xs tracking-[0.3em] uppercase fade-in-up" style="animation-delay: 0.1s;">Nexio Group</div>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-luxury-navy mb-6 leading-tight fade-in-up" style="animation-delay: 0.3s;">
+                知性と技術が導く、<br>
+                <span class="luxury-gradient-text">グローバル人材の未来。</span>
+            </h1>
+            <!-- 文字を囲む枠の最大幅を max-w-2xl から max-w-4xl に広げ、1行に収まるように調整しました -->
+            <p class="text-gray-600 text-lg md:text-xl max-w-4xl mx-auto mb-10 leading-relaxed fade-in-up" style="animation-delay: 0.5s;">
+                圧倒的なグループ力と法的専門性、そして最先端のAI教育。<br class="hidden md:block">
+                フジリンクス協同組合は、外国人材雇用の新たなスタンダードを創造します。
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-4 fade-in-up" style="animation-delay: 0.7s;">
+                <a href="#concept" class="px-8 py-4 bg-luxury-navy text-white hover:bg-luxury-gold transition-all duration-300 shadow-luxury">私たちの強み</a>
+                <a href="#contact" class="px-8 py-4 border border-luxury-navy text-luxury-navy hover:bg-gray-50 transition-all duration-300">お問い合わせ</a>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <span class="block w-[1px] h-16 bg-gradient-to-b from-luxury-navy to-transparent mx-auto"></span>
+        </div>
+    </section>
+
+    <!-- Concept Section: The Three Pillars -->
+    <section id="concept" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-luxury-navy mb-4">Core Competence</h2>
+                <div class="w-16 h-1 bg-luxury-gold mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    私たちは単なる監理団体ではありません。ネクシオグループの総合力を背景に、<br>
+                    「法務」「教育」「技術」の3つの軸で、貴社の外国人雇用を成功に導きます。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1: Group Power & Legal -->
+                <div class="group hover-card p-8 bg-luxury-base border border-gray-100 rounded-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-luxury-gold/10 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+                    <div class="text-luxury-gold text-4xl mb-6">⚖️</div>
+                    <h3 class="text-xl font-serif font-bold text-luxury-navy mb-4">法務のスペシャリスト</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm">
+                        社会保険労務士法人・行政書士事務所をグループ内に擁し、複雑なビザ申請から労務管理まで、コンプライアンスを徹底した万全のサポートを提供します。
+                    </p>
+                </div>
+
+                <!-- Card 2: AI & DX -->
+                <div class="group hover-card p-8 bg-luxury-navy text-white rounded-sm relative overflow-hidden shadow-luxury transform md:-translate-y-4">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-luxury-gold/20 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+                    <div class="text-luxury-gold text-4xl mb-6">🤖</div>
+                    <h3 class="text-xl font-serif font-bold text-white mb-4">AI × 教育革命</h3>
+                    <p class="text-gray-300 leading-relaxed text-sm">
+                        最新のAI技術とLINEチャットボットを駆使。24時間365日、日本語教育から生活習慣、キャリア形成まで、個々の実習生に寄り添った自動化サポートを実現。
+                    </p>
+                </div>
+
+                <!-- Card 3: Group Synergy -->
+                <div class="group hover-card p-8 bg-luxury-base border border-gray-100 rounded-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-luxury-gold/10 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+                    <div class="text-luxury-gold text-4xl mb-6">🤝</div>
+                    <h3 class="text-xl font-serif font-bold text-luxury-navy mb-4">ネクシオグループの総合力</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm">
+                        人材派遣・紹介のノウハウを持つ(株)ネクシオと連携。入口（採用）から出口（定着・キャリアアップ）まで、ワンストップで解決する組織力があります。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Education Detail Section -->
+    <section id="ai-education" class="py-24 bg-gray-50 relative overflow-hidden">
+        <!-- Decorative Background Element -->
+        <div class="absolute -left-20 top-40 w-96 h-96 bg-luxury-gold/5 rounded-full blur-3xl"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left: Text Content -->
+                <div>
+                    <span class="text-luxury-gold font-bold tracking-widest text-sm uppercase">Innovation</span>
+                    <h2 class="text-3xl md:text-5xl font-serif font-bold text-luxury-navy mt-2 mb-8">
+                        教育は、<br>
+                        <span class="text-luxury-gold">パーソナライズ</span>される時代へ。
+                    </h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        フジリンクス協同組合の最大の特徴は、LINE公式アカウントを活用した独自の教育システムです。
+                        チャットボットが個々のレベルに合わせて、日本語学習から日本の生活習慣、仕事の進め方、将来のキャリア設計までを継続的にコーチングします。
+                    </p>
+                    
+                    <!-- Interactive Tab Trigger Buttons -->
+                    <div class="space-y-4" id="education-features">
+                        <button onclick="updateEducationVisual('language')" class="edu-btn w-full text-left p-4 bg-white border-l-4 border-luxury-gold shadow-sm hover:shadow-md transition-all rounded-r-sm active-edu">
+                            <h4 class="font-bold text-luxury-navy flex items-center justify-between">
+                                <span>🇯🇵 日本語教育プログラム</span>
+                                <span class="text-luxury-gold text-xl">→</span>
+                            </h4>
+                            <p class="text-sm text-gray-500 mt-1">N4〜N2レベルまで、AIが理解度を判定し最適なカリキュラムを提供。</p>
+                        </button>
+                        <button onclick="updateEducationVisual('life')" class="edu-btn w-full text-left p-4 bg-white border-l-4 border-transparent hover:border-luxury-gold shadow-sm hover:shadow-md transition-all rounded-r-sm">
+                            <h4 class="font-bold text-luxury-navy flex items-center justify-between">
+                                <span>👘 生活習慣・文化適応</span>
+                                <span class="text-luxury-gold text-xl">→</span>
+                            </h4>
+                            <p class="text-sm text-gray-500 mt-1">ゴミ出しから銀行口座開設、日本のビジネスマナーまで生活をナビゲート。</p>
+                        </button>
+                        <button onclick="updateEducationVisual('career')" class="edu-btn w-full text-left p-4 bg-white border-l-4 border-transparent hover:border-luxury-gold shadow-sm hover:shadow-md transition-all rounded-r-sm">
+                            <h4 class="font-bold text-luxury-navy flex items-center justify-between">
+                                <span>📈 キャリアアップ支援</span>
+                                <span class="text-luxury-gold text-xl">→</span>
+                            </h4>
+                            <p class="text-sm text-gray-500 mt-1">特定技能への移行支援や、資格取得に向けた学習ロードマップを提示。</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Visual Representation (Mockup) -->
+                <div class="relative">
+                    <div class="bg-white p-2 rounded-3xl shadow-2xl border-8 border-luxury-navyLight mx-auto max-w-sm h-[600px] flex flex-col relative">
+                        <!-- Phone Notch -->
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-luxury-navyLight rounded-b-xl z-20"></div>
+                        
+                        <!-- Screen Header -->
+                        <div class="bg-luxury-navyLight text-white p-6 pt-10 rounded-t-2xl text-center">
+                            <p class="text-xs text-luxury-gold uppercase tracking-widest">Fuji Links AI Bot</p>
+                            <h3 id="phone-title" class="font-bold text-lg mt-1">日本語マスターコース</h3>
+                        </div>
+
+                        <!-- Screen Body (Dynamic Content) -->
+                        <div id="phone-content" class="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4">
+                            <!-- Chat Bubbles will be injected by JS -->
+                        </div>
+
+                        <!-- Screen Footer -->
+                        <div class="bg-white p-4 border-t border-gray-100 rounded-b-2xl">
+                            <div class="flex justify-between items-center text-gray-400 text-xs">
+                                <span>Menu</span>
+                                <div class="w-10 h-10 bg-luxury-gold rounded-full flex items-center justify-center text-white text-lg">Send</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating Badge -->
+                    <div class="absolute -bottom-6 -right-6 bg-white p-4 shadow-luxury rounded-sm border border-luxury-gold animate-bounce hidden md:block">
+                        <p class="text-luxury-navy font-bold text-center">
+                            <span class="text-2xl block text-luxury-gold">24/365</span>
+                            Always Support
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Synergy & Data Section -->
+    <section id="synergy" class="py-24 bg-luxury-navy text-white">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                
+                <!-- Left: Chart -->
+                <div class="order-2 md:order-1">
+                     <div class="chart-container">
+                        <canvas id="synergyChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-gray-400 mt-4">※ 当社独自のサービス評価指標に基づく比較イメージ</p>
+                </div>
+
+                <!-- Right: Content -->
+                <div class="order-1 md:order-2">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6">圧倒的な<span class="text-luxury-gold">安心</span>の理由。</h2>
+                    <p class="text-gray-300 mb-8 leading-relaxed">
+                        一般的な監理団体とは異なり、ネクシオグループには「社会保険労務士」と「行政書士」の専門家が常駐しています。
+                        法的リスクの回避はもちろん、外国人材の生活サポート品質において、圧倒的な高スコアを実現しています。
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="border border-gray-700 p-4 rounded-sm hover:border-luxury-gold transition-colors">
+                            <div class="text-luxury-gold font-bold text-xl mb-1">Legal Tech</div>
+                            <p class="text-sm text-gray-400">LegalForce等の最新システムによる契約書・規則の自動チェック</p>
+                        </div>
+                        <div class="border border-gray-700 p-4 rounded-sm hover:border-luxury-gold transition-colors">
+                            <div class="text-luxury-gold font-bold text-xl mb-1">Pro Support</div>
+                            <p class="text-sm text-gray-400">専門家による定期巡回と労務監査でトラブルを未然に防止</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Flow Section -->
+    <section id="process" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-luxury-gold font-bold tracking-widest text-sm uppercase">Roadmap</span>
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-luxury-navy mt-2">導入から定着までの流れ</h2>
+            </div>
+
+            <div class="relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2 z-0"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative z-10">
+                    <!-- Step 1 -->
+                    <div class="process-step group cursor-pointer" onclick="highlightStep(1)">
+                        <div class="bg-white border-2 border-luxury-navy text-luxury-navy w-12 h-12 flex items-center justify-center rounded-full mx-auto font-bold text-xl group-hover:bg-luxury-gold group-hover:border-luxury-gold group-hover:text-white transition-colors mb-4 relative z-10">1</div>
+                        <div class="bg-white p-6 shadow-lg rounded-sm border-t-4 border-transparent group-hover:border-luxury-gold transition-all h-full">
+                            <h4 class="font-bold text-luxury-navy mb-2 text-center">募集・面接</h4>
+                            <p class="text-xs text-gray-500 text-center">現地での募集活動代行と選考面接の実施を徹底サポート。</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="process-step group cursor-pointer" onclick="highlightStep(2)">
+                        <div class="bg-white border-2 border-luxury-navy text-luxury-navy w-12 h-12 flex items-center justify-center rounded-full mx-auto font-bold text-xl group-hover:bg-luxury-gold group-hover:border-luxury-gold group-hover:text-white transition-colors mb-4 relative z-10">2</div>
+                        <div class="bg-white p-6 shadow-lg rounded-sm border-t-4 border-transparent group-hover:border-luxury-gold transition-all h-full">
+                            <h4 class="font-bold text-luxury-navy mb-2 text-center">ビザ申請</h4>
+                            <p class="text-xs text-gray-500 text-center">グループ内の行政書士による、迅速で確実な在留資格申請代行。</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="process-step group cursor-pointer" onclick="highlightStep(3)">
+                        <div class="bg-white border-2 border-luxury-navy text-luxury-navy w-12 h-12 flex items-center justify-center rounded-full mx-auto font-bold text-xl group-hover:bg-luxury-gold group-hover:border-luxury-gold group-hover:text-white transition-colors mb-4 relative z-10">3</div>
+                        <div class="bg-white p-6 shadow-lg rounded-sm border-t-4 border-transparent group-hover:border-luxury-gold transition-all h-full">
+                            <h4 class="font-bold text-luxury-navy mb-2 text-center">受入準備</h4>
+                            <p class="text-xs text-gray-500 text-center">住居・生活環境のセットアップと、来日時の送迎サポート。</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="process-step group cursor-pointer" onclick="highlightStep(4)">
+                        <div class="bg-white border-2 border-luxury-navy text-luxury-navy w-12 h-12 flex items-center justify-center rounded-full mx-auto font-bold text-xl group-hover:bg-luxury-gold group-hover:border-luxury-gold group-hover:text-white transition-colors mb-4 relative z-10">4</div>
+                        <div class="bg-white p-6 shadow-lg rounded-sm border-t-4 border-transparent group-hover:border-luxury-gold transition-all h-full">
+                            <h4 class="font-bold text-luxury-navy mb-2 text-center">就労開始</h4>
+                            <p class="text-xs text-gray-500 text-center">社会保険手続き代行と、初期の労務管理指導。</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="process-step group cursor-pointer" onclick="highlightStep(5)">
+                        <div class="bg-white border-2 border-luxury-navy text-luxury-navy w-12 h-12 flex items-center justify-center rounded-full mx-auto font-bold text-xl group-hover:bg-luxury-gold group-hover:border-luxury-gold group-hover:text-white transition-colors mb-4 relative z-10">5</div>
+                        <div class="bg-white p-6 shadow-lg rounded-sm border-t-4 border-luxury-gold bg-luxury-base transition-all h-full relative overflow-hidden">
+                             <div class="absolute top-0 right-0 w-8 h-8 bg-luxury-gold/20 rounded-bl-full"></div>
+                            <h4 class="font-bold text-luxury-navy mb-2 text-center">継続サポート</h4>
+                            <p class="text-xs text-gray-500 text-center">LINEボット教育、生活相談、在留更新、助成金申請まで伴走。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-24 md:mt-32 text-center relative z-20">
+                <p class="text-luxury-navy font-bold text-lg border-b border-luxury-gold inline-block pb-1">One-Stop Solution by Nexio Group</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Group Information -->
+    <section class="py-16 bg-gray-50 border-t border-gray-200">
+        <div class="container mx-auto px-6">
+            <h3 class="text-2xl font-serif font-bold text-luxury-navy mb-8 text-center">ネクシオグループ構成</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-6 rounded-sm shadow-sm text-center hover:shadow-md transition-all">
+                    <p class="text-xs text-gray-400 mb-2">人材派遣・紹介</p>
+                    <h4 class="font-bold text-luxury-navy mb-2">株式会社ネクシオ</h4>
+                    <a href="https://www.nexio.jp/" target="_blank" rel="noopener noreferrer" class="text-xs text-luxury-gold hover:text-luxury-navy transition-colors">https://www.nexio.jp/</a>
+                </div>
+                <div class="bg-white p-6 rounded-sm shadow-sm text-center hover:shadow-md transition-all border-b-4 border-luxury-gold">
+                    <p class="text-xs text-gray-400 mb-2">外国人技能実習生受入</p>
+                    <h4 class="font-bold text-luxury-navy">フジリンクス協同組合</h4>
+                </div>
+                <div class="bg-white p-6 rounded-sm shadow-sm text-center hover:shadow-md transition-all">
+                    <p class="text-xs text-gray-400 mb-2">労務管理・社保手続</p>
+                    <h4 class="font-bold text-luxury-navy">社労士法人キャリアデザイン</h4>
+                </div>
+                <div class="bg-white p-6 rounded-sm shadow-sm text-center hover:shadow-md transition-all">
+                    <p class="text-xs text-gray-400 mb-2">ビザ申請・許認可</p>
+                    <h4 class="font-bold text-luxury-navy">行政書士キャリア法務事務所</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Contact -->
+    <footer id="contact" class="bg-luxury-navy text-white pt-20 pb-10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div>
+                    <h2 class="text-3xl font-serif font-bold mb-6">お問い合わせ</h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed">
+                        外国人材の受入れに関するご相談、AI教育システムへのご質問など、<br>
+                        お気軽にお問い合わせください。専門スタッフが丁寧にご案内いたします。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <span class="text-luxury-gold text-xl">📞</span>
+                            <span class="text-2xl font-serif">055-957-2003</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-luxury-gold text-xl">✉️</span>
+                            <span>info@fujilinx.coop</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <!-- FormSubmitを利用した簡易メール送信システム -->
+                    <form action="https://formsubmit.co/sugiyama.fumikazu@gmail.com" method="POST" class="space-y-4">
+                        
+                        <!-- FormSubmitの設定（Hidden要素） -->
+                        <!-- CCアドレスの設定（2つ目の宛先） -->
+                        <input type="hidden" name="_cc" value="k.takagi@nexio.jp">
+                        <!-- メールの件名 -->
+                        <input type="hidden" name="_subject" value="【お問い合わせ】フジリンクス協同組合Webサイトより">
+                        <!-- 送信後の画面（サンクスページを無効にして元の画面に戻す場合など、今回はデフォルトを使用） -->
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_captcha" value="false">
+
+                        <!-- 入力フィールド（name属性がメール本文の項目名になります） -->
+                        <input type="text" name="貴社名" placeholder="貴社名" required class="w-full bg-luxury-navyLight border border-gray-700 text-white p-4 rounded-sm focus:border-luxury-gold focus:outline-none transition-colors">
+                        <input type="text" name="ご担当者様名" placeholder="ご担当者様名" required class="w-full bg-luxury-navyLight border border-gray-700 text-white p-4 rounded-sm focus:border-luxury-gold focus:outline-none transition-colors">
+                        <input type="email" name="メールアドレス" placeholder="メールアドレス" required class="w-full bg-luxury-navyLight border border-gray-700 text-white p-4 rounded-sm focus:border-luxury-gold focus:outline-none transition-colors">
+                        <textarea name="ご相談内容" rows="3" placeholder="ご相談内容" required class="w-full bg-luxury-navyLight border border-gray-700 text-white p-4 rounded-sm focus:border-luxury-gold focus:outline-none transition-colors"></textarea>
+                        
+                        <button type="submit" class="w-full bg-luxury-gold text-luxury-navy font-bold p-4 rounded-sm hover:bg-white transition-colors duration-300">送信</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-16 pt-8 text-center text-xs text-gray-500">
+                <p>&copy; 2026 Fuji Links Cooperative. All Rights Reserved. Part of Nexio Group.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Hero Canvas Animation (Abstract Network/Particles) ---
+            const canvas = document.getElementById('heroCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            let width, height;
+            let particles = [];
+            
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.size = Math.random() * 2 + 1;
+                    this.color = Math.random() > 0.8 ? '#C5A059' : '#E2E8F0'; // Gold or Gray
+                }
+                
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+                }
+                
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+            
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < 60; i++) {
+                    particles.push(new Particle());
+                }
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw connections
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+                    p1.update();
+                    p1.draw();
+                    
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < 150) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(197, 160, 89, ${0.15 - dist/1000})`; // Gold connections
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            
+            window.addEventListener('resize', resize);
+            resize();
+            initParticles();
+            animate();
+
+            // --- 2. Education Mockup Interaction ---
+            const eduData = {
+                language: {
+                    title: "日本語マスターコース",
+                    chats: [
+                        { type: "bot", text: "こんにちは！今日はN3レベルの文法「〜に対して」を勉強しましょう。" },
+                        { type: "user", text: "はい、お願いします！" },
+                        { type: "bot", text: "例文：お客様に対して、丁寧な言葉を使いましょう。これは「〜に向かって」という意味ですね。" }
+                    ]
+                },
+                life: {
+                    title: "日本生活ガイド",
+                    chats: [
+                        { type: "bot", text: "今週のゴミ出しカレンダーを確認しましたか？明日は「燃えるゴミ」の日です。" },
+                        { type: "user", text: "忘れていました。ありがとうございます。" },
+                        { type: "bot", text: "袋は指定の黄色い袋を使ってくださいね。分別の仕方はこちらの画像を見てください。" }
+                    ]
+                },
+                career: {
+                    title: "キャリアサポート",
+                    chats: [
+                        { type: "bot", text: "技能実習2号の試験まであと3ヶ月です。進捗はいかがですか？" },
+                        { type: "user", text: "実技試験が少し不安です。" },
+                        { type: "bot", text: "大丈夫です。来週、専門講師による対策動画を配信しますので、必ずチェックしてください。" }
+                    ]
+                }
+            };
+
+            window.updateEducationVisual = (key) => {
+                // Update Buttons
+                document.querySelectorAll('.edu-btn').forEach(btn => {
+                    btn.classList.remove('border-luxury-gold', 'bg-gray-50');
+                    btn.classList.add('border-transparent', 'bg-white');
+                });
+                // Find clicked button
+                const activeBtn = document.querySelector(`button[onclick="updateEducationVisual('${key}')"]`);
+                if(activeBtn) {
+                    activeBtn.classList.remove('border-transparent', 'bg-white');
+                    activeBtn.classList.add('border-luxury-gold', 'bg-gray-50');
+                }
+
+                // Update Phone Content
+                const data = eduData[key];
+                const phoneContent = document.getElementById('phone-content');
+                const phoneTitle = document.getElementById('phone-title');
+                
+                phoneTitle.textContent = data.title;
+                phoneContent.innerHTML = ''; // clear
+                
+                data.chats.forEach((chat, index) => {
+                    setTimeout(() => {
+                        const bubble = document.createElement('div');
+                        const isBot = chat.type === 'bot';
+                        bubble.className = `flex ${isBot ? 'justify-start' : 'justify-end'} mb-4 fade-in-up`;
+                        bubble.style.animationDelay = '0s';
+                        
+                        bubble.innerHTML = `
+                            ${isBot ? '<div class="w-8 h-8 bg-luxury-navy rounded-full flex items-center justify-center text-white text-xs mr-2 flex-shrink-0">AI</div>' : ''}
+                            <div class="max-w-[70%] p-3 rounded-lg text-sm ${isBot ? 'bg-white border border-gray-200 text-gray-700 rounded-tl-none' : 'bg-luxury-gold text-white rounded-tr-none'} shadow-sm">
+                                ${chat.text}
+                            </div>
+                        `;
+                        phoneContent.appendChild(bubble);
+                        phoneContent.scrollTop = phoneContent.scrollHeight;
+                    }, index * 400);
+                });
+            };
+            
+            // Initialize with Language
+            updateEducationVisual('language');
+
+            // --- 3. Synergy Chart (Radar) ---
+            const ctxRadar = document.getElementById('synergyChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['コンプライアンス', '教育・定着率', '対応スピード', 'コストパフォーマンス', 'トラブル解決力'],
+                    datasets: [{
+                        label: 'フジリンクス協同組合',
+                        data: [98, 95, 90, 85, 98],
+                        backgroundColor: 'rgba(197, 160, 89, 0.4)', // Luxury Gold
+                        borderColor: '#C5A059',
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#C5A059',
+                        pointHoverBackgroundColor: '#C5A059',
+                        pointHoverBorderColor: '#fff'
+                    }, {
+                        label: '一般的な監理団体',
+                        data: [70, 60, 50, 60, 55],
+                        backgroundColor: 'rgba(148, 163, 184, 0.2)', // Gray
+                        borderColor: '#94a3b8',
+                        pointBackgroundColor: '#94a3b8',
+                        pointBorderColor: '#fff',
+                        borderDash: [5, 5]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.2)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.2)' },
+                            pointLabels: {
+                                color: 'white',
+                                font: { size: 12, family: "'Noto Sans JP', sans-serif" }
+                            },
+                            ticks: { display: false, backdropColor: 'transparent' },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: 'white', font: { family: "'Noto Serif JP', serif" } }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0F172A',
+                            titleColor: '#C5A059',
+                            bodyColor: '#fff',
+                            borderColor: '#C5A059',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+
+            // --- 4. Mobile Menu Toggle ---
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // --- 5. Smooth Scroll for Nav Links ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // --- 6. Intersection Observer for Fade-in animations ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-20');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+        });
+    </script>
+</body>
+</html>
